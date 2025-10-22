@@ -1,16 +1,29 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
-@app.route('/')
-def login():
-    return render_template('form.html')  # your username/password form
+@app.route('/', methods=['GET','POST'])
+def index():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('pwd')
 
-@app.route('/result', methods=['POST'])
-def result():
-    username = request.form['username']
-    password = request.form['pwd']
-    return render_template('result.html', username=username, password=password)
+        # JS alert validation
+        if not username:
+            return '''<script>alert("Username cannot be empty.");window.location='/'</script>'''
+        if not password:
+            return '''<script>alert("Password cannot be empty.");window.location='/'</script>'''
+        if len(password) < 6:
+            return '''<script>alert("Password must be at least 6 characters long.");window.location='/'</script>'''
 
-if __name__ == '__main__':
+        # Successful submission
+        return redirect(url_for('submit', username=username))
+    return render_template('form.html')
+
+@app.route('/submit')
+def submit():
+    username = request.args.get('username', '')
+    return f"Hello, {username}! Welcome to the website"
+
+if __name__ == "__main__":
     app.run(debug=True)
