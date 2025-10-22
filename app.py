@@ -9,7 +9,7 @@ def login():
 @app.route('/result', methods=['POST'])
 def result():
     username = request.form['username']
-    password = request.form['password']
+    password = request.form['pwd']
     return render_template('result.html', username=username, password=password)
 
 if __name__ == '__main__':
